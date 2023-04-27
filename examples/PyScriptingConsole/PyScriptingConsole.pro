@@ -15,7 +15,7 @@ include ( ../../build/common.prf )
 include ( ../../build/PythonQt.prf )  
 include ( ../../build/PythonQt_QtAll.prf )  
 
-contains(QT_MAJOR_VERSION, 5) {
+!lessThan(QT_MAJOR_VERSION, 5) {
   QT += widgets
 }
 

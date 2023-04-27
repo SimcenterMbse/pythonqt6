@@ -240,6 +240,7 @@ QList<QObject*> PythonQtStdDecorators::findChildren(QObject* parent, PyObject* t
   return list;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QList<QObject*> PythonQtStdDecorators::findChildren(QObject* parent, PyObject* type, const QRegExp& regExp)
 {
   const QMetaObject* meta = nullptr;
@@ -264,6 +265,7 @@ QList<QObject*> PythonQtStdDecorators::findChildren(QObject* parent, PyObject* t
 
   return list;
 }
+#endif
 
 QObject* PythonQtStdDecorators::findChild(QObject* parent, const char* typeName, const QMetaObject* meta, const QString& name)
 {
@@ -322,6 +324,7 @@ int PythonQtStdDecorators::findChildren(QObject* parent, const char* typeName, c
   return 0;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 int PythonQtStdDecorators::findChildren(QObject* parent, const char* typeName, const QMetaObject* meta, const QRegExp& regExp, QList<QObject*>& list)
 {
   const QObjectList& children = parent->children();
@@ -348,6 +351,7 @@ int PythonQtStdDecorators::findChildren(QObject* parent, const char* typeName, c
 
   return 0;
 }
+#endif
 
 const QMetaObject* PythonQtStdDecorators::metaObject( QObject* obj )
 {

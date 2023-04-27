@@ -122,8 +122,11 @@ void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
     } else {
       qRegisterMetaType<quint32>("size_t");
     }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     int stringRefId = qRegisterMetaType<QStringRef>("QStringRef");
     PythonQtConv::registerMetaTypeToPythonConverter(stringRefId, PythonQtConv::convertFromStringRef);
+#endif
 
     int objectPtrListId = qRegisterMetaType<QList<PythonQtObjectPtr> >("QList<PythonQtObjectPtr>");
     PythonQtConv::registerMetaTypeToPythonConverter(objectPtrListId, PythonQtConv::convertFromQListOfPythonQtObjectPtr);
@@ -139,43 +142,46 @@ void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
     
 #ifdef PYTHONQT_SUPPORT_ML_TYPES
     PythonQtMethodInfo::addParameterTypeAlias("QList<MLfloat>", "QList<float>");
-    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLfloat>", "QVector<float>");
     PythonQtMethodInfo::addParameterTypeAlias("QList<MLdouble>", "QList<double>");
-    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLdouble>", "QVector<double>");
-
     PythonQtMethodInfo::addParameterTypeAlias("QList<MLuint32>", "QList<quint32>");
-    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLuint32>", "QVector<quint32>");
     PythonQtMethodInfo::addParameterTypeAlias("QList<MLint32>", "QList<qint32>");
-    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLint32>", "QVector<qint32>");
-
     PythonQtMethodInfo::addParameterTypeAlias("QList<MLuint64>", "QList<quint64>");
-    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLuint64>", "QVector<quint64>");
     PythonQtMethodInfo::addParameterTypeAlias("QList<MLint64>", "QList<qint64>");
-    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLint64>", "QVector<qint64>");
     PythonQtMethodInfo::addParameterTypeAlias("QList<MLuint>", "QList<quint64>");
-    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLuint>", "QVector<quint64>");
     PythonQtMethodInfo::addParameterTypeAlias("QList<MLint>", "QList<qint64>");
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLfloat>", "QVector<float>");
+    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLdouble>", "QVector<double>");
+    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLuint32>", "QVector<quint32>");
+    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLint32>", "QVector<qint32>");
+    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLuint64>", "QVector<quint64>");
+    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLint64>", "QVector<qint64>");
+    PythonQtMethodInfo::addParameterTypeAlias("QVector<MLuint>", "QVector<quint64>");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<MLint>", "QVector<qint64>");
 #endif
+#endif
 
-    PythonQtMethodInfo::addParameterTypeAlias("QList<qreal>", "QList<double>");
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     PythonQtMethodInfo::addParameterTypeAlias("QVector<qreal>", "QVector<double>");
-    PythonQtMethodInfo::addParameterTypeAlias("QList<unsigned int>", "QList<quint32>");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<unsigned int>", "QVector<quint32>");
-    // Qt 4 uses uint, while Qt 5 uses unsigned int, seems to be a moc change...
-    PythonQtMethodInfo::addParameterTypeAlias("QList<uint>", "QList<quint32>");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<uint>", "QVector<quint32>");
-    PythonQtMethodInfo::addParameterTypeAlias("QList<int>", "QList<qint32>");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<int>", "QVector<qint32>");
-    PythonQtMethodInfo::addParameterTypeAlias("QList<GLint>", "QList<qint32>");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<GLint>", "QVector<qint32>");
-    PythonQtMethodInfo::addParameterTypeAlias("QList<GLuint>", "QList<qint32>");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<GLuint>", "QVector<quint32>");
-    PythonQtMethodInfo::addParameterTypeAlias("QList<GLuint64>", "QList<quint64>");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<GLuint64>", "QVector<quint64>");
-    PythonQtMethodInfo::addParameterTypeAlias("QList<GLint64>", "QList<qint64>");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<GLint64>", "QVector<qint64>");
 
+#endif
+    PythonQtMethodInfo::addParameterTypeAlias("QList<qreal>", "QList<double>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<unsigned int>", "QList<quint32>");
+    // Qt 4 uses uint, while Qt 5 uses unsigned int, seems to be a moc change...
+    PythonQtMethodInfo::addParameterTypeAlias("QList<uint>", "QList<quint32>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<int>", "QList<qint32>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<GLint>", "QList<qint32>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<GLuint>", "QList<qint32>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<GLuint64>", "QList<quint64>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<GLint64>", "QList<qint64>");
     PythonQtMethodInfo::addParameterTypeAlias("QList<QLocale::Country>", "QList<int>");
     PythonQtMethodInfo::addParameterTypeAlias("QList<Qt::DayOfWeek>", "QList<int>");
 
@@ -189,27 +195,43 @@ void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
     PythonQtRegisterQPairConverter(double, QPointF);
     PythonQtRegisterQPairConverter(double, QVariant);
     PythonQtRegisterQPairConverter(QString, QSizeF);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     PythonQtMethodInfo::addParameterTypeAlias("QPair<qreal,qreal>", "QPair<double,double>");
     PythonQtMethodInfo::addParameterTypeAlias("QPair<qreal,QColor>", "QPair<double,QColor>");
     PythonQtMethodInfo::addParameterTypeAlias("QPair<qreal,QPointF>", "QPair<double,QPointF>");
     PythonQtMethodInfo::addParameterTypeAlias("QPair<qreal,QVariant>", "QPair<double,QVariant>");
     PythonQtMethodInfo::addParameterTypeAlias("QPair<QOpenGLTexture::Filter,QOpenGLTexture::Filter>", "QPair<int,int>");
+#else
+    PythonQtMethodInfo::addParameterTypeAlias("std::pair<qreal,qreal>", "std::pair<double,double>");
+    PythonQtMethodInfo::addParameterTypeAlias("std::pair<qreal,QColor>", "std::pair<double,QColor>");
+    PythonQtMethodInfo::addParameterTypeAlias("std::pair<qreal,QPointF>", "std::pair<double,QPointF>");
+    PythonQtMethodInfo::addParameterTypeAlias("std::pair<qreal,QVariant>", "std::pair<double,QVariant>");
+    PythonQtMethodInfo::addParameterTypeAlias("std::pair<QOpenGLTexture::Filter,QOpenGLTexture::Filter>", "std::pair<int,int>");
+#endif
 
     // register some QList/QVector of QPairs that are used in the Qt interfaces:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     PythonQtRegisterListTemplateQPairConverter(QVector, double, QVariant);
     PythonQtRegisterListTemplateQPairConverter(QVector, double, QColor);
     // NOTE: the extra space between the > is needed (and added by the moc)
     PythonQtMethodInfo::addParameterTypeAlias("QVector<QPair<qreal,QVariant> >", "QVector<QPair<double,QVariant> >");
     PythonQtMethodInfo::addParameterTypeAlias("QVector<QPair<qreal,QColor> >", "QVector<QPair<double,QColor> >");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<QPair<qreal,QPointF> >", "QList<QPair<double,QPointF> >");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<QPair<qreal,qreal> >", "QList<QPair<double,double> >");
+#else
+    PythonQtRegisterListTemplateQPairConverter(QList, double, QVariant);
+    PythonQtRegisterListTemplateQPairConverter(QList, double, QColor);
+    PythonQtMethodInfo::addParameterTypeAlias("QList<std::pair<qreal,QVariant>>", "QList<std::pair<double,QVariant>>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<std::pair<qreal,QColor>>", "QList<std::pair<double,QColor>>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<std::pair<qreal,QPointF>>", "QList<std::pair<double,QPointF>>");
+    PythonQtMethodInfo::addParameterTypeAlias("QList<std::pair<qreal,qreal>>", "QList<std::pair<double,double>>");
+#endif
 
     PythonQtRegisterListTemplateQPairConverter(QList, QByteArray, QByteArray);
     PythonQtRegisterListTemplateQPairConverter(QList, QString, QString);
     PythonQtRegisterListTemplateQPairConverter(QList, QString, QSizeF);
     PythonQtRegisterListTemplateQPairConverter(QList, double, QPointF);
     PythonQtRegisterListTemplateQPairConverter(QList, double, double);
-    // NOTE: the extra space between the > is needed (and added by the moc)
-    PythonQtMethodInfo::addParameterTypeAlias("QList<QPair<qreal,QPointF> >", "QList<QPair<double,QPointF> >");
-    PythonQtMethodInfo::addParameterTypeAlias("QList<QPair<qreal,qreal> >", "QList<QPair<double,double> >");
 
     PythonQtRegisterIntegerMapConverter(QMap, QByteArray);
     PythonQtRegisterIntegerMapConverter(QMap, QVariant);
@@ -239,7 +261,9 @@ void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QLineF);
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QPoint);
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QPointF);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QRegExp);
+#endif
 
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QFont);
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QPixmap);
@@ -257,13 +281,19 @@ void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QPen);
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QTextLength);
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QTextFormat);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     PythonQtRegisterToolClassesTemplateConverterForKnownClass(QMatrix);
+#endif
 
     PyObject* pack = PythonQt::priv()->packageByName("QtCore");
     PyObject* pack2 = PythonQt::priv()->packageByName("Qt");
     PyObject* qtNamespace = PythonQt::priv()->getClassInfo("Qt")->pythonQtClassWrapper();
-    const char* names[16] = {"SIGNAL", "SLOT", "qAbs", "qBound","qDebug","qWarning","qCritical","qFatal"
-                        ,"qFuzzyCompare", "qMax","qMin","qRound","qRound64","qVersion","qrand","qsrand"};
+    const char* names[] = {"SIGNAL", "SLOT", "qAbs", "qBound","qDebug","qWarning","qCritical","qFatal"
+                        ,"qFuzzyCompare", "qMax","qMin","qRound","qRound64","qVersion"
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+       ,"qrand","qsrand"
+#endif
+       };
     for (unsigned int i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
       PyObject* obj = PyObject_GetAttrString(qtNamespace, names[i]);
       if (obj) {
@@ -277,9 +307,10 @@ void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
           std::cerr << "failed to add " << names[i] << " to Qt\n";
         }
       } else {
-        std::cerr << "method not found " << names[i] << std::endl;
+        std::cerr << "method not found " << names[i] << "\n";
       }
     }
+
     int enumValues[] = {
       QtDebugMsg,
       QtWarningMsg,

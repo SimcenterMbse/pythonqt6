@@ -67,16 +67,11 @@ PythonQtConv::registerMetaTypeToPythonConverter(typeId, PythonQtConvertListOfVal
   PythonQtConv::registerMetaTypeToPythonConverter(typeId, PythonQtConvertListOfKnownClassToPythonList<type<innertype >, innertype>); \
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #define PythonQtRegisterQPairConverter(type1, type2) \
 { int typeId = qRegisterMetaType<QPair<type1, type2> >("QPair<"#type1","#type2">"); \
   PythonQtConv::registerPythonToMetaTypeConverter(typeId, PythonQtConvertPythonToPair<type1, type2>); \
   PythonQtConv::registerMetaTypeToPythonConverter(typeId, PythonQtConvertPairToPython<type1, type2>); \
-}
-
-#define PythonQtRegisterIntegerMapConverter(type, innertype) \
-{ int typeId = qRegisterMetaType<type<int, innertype > >(#type"<int, "#innertype">"); \
-  PythonQtConv::registerPythonToMetaTypeConverter(typeId, PythonQtConvertPythonToIntegerMap<type<int, innertype >, innertype>); \
-  PythonQtConv::registerMetaTypeToPythonConverter(typeId, PythonQtConvertIntegerMapToPython<type<int, innertype >, innertype>); \
 }
 
 #define PythonQtRegisterListTemplateQPairConverter(listtype, type1, type2) \
@@ -96,6 +91,37 @@ PythonQtConv::registerMetaTypeToPythonConverter(typeId, PythonQtConvertListOfVal
   PythonQtRegisterListTemplateConverterForKnownClass(QList, innertype); \
   PythonQtRegisterListTemplateConverterForKnownClass(QVector, innertype); \
   PythonQtRegisterListTemplateConverterForKnownClass(std::vector, innertype);
+
+#else
+#define PythonQtRegisterQPairConverter(type1, type2) \
+{ int typeId = qRegisterMetaType<std::pair<type1, type2> >("std::pair<"#type1","#type2">"); \
+  PythonQtConv::registerPythonToMetaTypeConverter(typeId, PythonQtConvertPythonToPair<type1, type2>); \
+  PythonQtConv::registerMetaTypeToPythonConverter(typeId, PythonQtConvertPairToPython<type1, type2>); \
+}
+
+#define PythonQtRegisterListTemplateQPairConverter(listtype, type1, type2) \
+{ \
+  qRegisterMetaType<QPair<type1, type2> >("std::pair<"#type1","#type2">"); \
+  int typeId = qRegisterMetaType<listtype<std::pair<type1, type2> > >(#listtype"<std::pair<"#type1","#type2">>"); \
+  PythonQtConv::registerPythonToMetaTypeConverter(typeId, PythonQtConvertPythonListToListOfPair<listtype<std::pair<type1, type2> >, type1, type2>); \
+  PythonQtConv::registerMetaTypeToPythonConverter(typeId, PythonQtConvertListOfPairToPythonList<listtype<std::pair<type1, type2> >, type1, type2>); \
+}
+
+#define PythonQtRegisterToolClassesTemplateConverter(innertype) \
+  PythonQtRegisterListTemplateConverter(QList, innertype); \
+  PythonQtRegisterListTemplateConverter(std::vector, innertype);
+
+#define PythonQtRegisterToolClassesTemplateConverterForKnownClass(innertype) \
+  PythonQtRegisterListTemplateConverterForKnownClass(QList, innertype); \
+  PythonQtRegisterListTemplateConverterForKnownClass(std::vector, innertype);
+
+#endif
+
+#define PythonQtRegisterIntegerMapConverter(type, innertype) \
+{ int typeId = qRegisterMetaType<type<int, innertype > >(#type"<int, "#innertype">"); \
+  PythonQtConv::registerPythonToMetaTypeConverter(typeId, PythonQtConvertPythonToIntegerMap<type<int, innertype >, innertype>); \
+  PythonQtConv::registerMetaTypeToPythonConverter(typeId, PythonQtConvertIntegerMapToPython<type<int, innertype >, innertype>); \
+}
 
 //! a static class that offers methods for type conversion
 class PYTHONQT_EXPORT PythonQtConv {
@@ -185,7 +211,10 @@ public:
   static PyObject* convertFromPythonQtSafeObjectPtr(const void* /* PythonQtObjectPtr* */ inObject, int /*metaTypeId*/);
   static bool      convertToQListOfPythonQtObjectPtr(PyObject* obj, void* /* QList<PythonQtObjectPtr>* */ outList, int /*metaTypeId*/, bool /*strict*/);
   static PyObject* convertFromQListOfPythonQtObjectPtr(const void* /* QList<PythonQtObjectPtr>* */ inObject, int /*metaTypeId*/);
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   static PyObject* convertFromStringRef(const void* inObject, int /*metaTypeId*/);
+#endif
 
   //! Returns the name of the equivalent CPP type (for signals and slots)
   static QByteArray getCPPTypeName(PyObject* type);

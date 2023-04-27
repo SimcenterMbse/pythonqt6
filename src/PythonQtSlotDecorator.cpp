@@ -83,9 +83,8 @@ int PythonQtSlotDecorator_init(PyObject *object, PyObject *args, PyObject *kw)
   return 1;
 }
 
-PyObject* PythonQtSlotDecorator_call(PyObject* object, PyObject* args, PyObject* kw)
+PyObject* PythonQtSlotDecorator_call(PyObject* object, PyObject* args, PyObject* /*kw*/)
 {
-  Q_UNUSED(kw)
   PythonQtSlotDecorator* self = (PythonQtSlotDecorator*)object;
   PyObject* function = PyTuple_GetItem(args, 0);
 

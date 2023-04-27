@@ -49,14 +49,18 @@ void PythonQt_init_QtNetwork(PyObject*);
 #ifdef PYTHONQT_WITH_CORE
 void PythonQt_init_QtCore(PyObject*);
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #ifdef PYTHONQT_WITH_OPENGL
 void PythonQt_init_QtOpenGL(PyObject*);
+#endif
 #endif
 #ifdef PYTHONQT_WITH_XML
 void PythonQt_init_QtXml(PyObject*);
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #ifdef PYTHONQT_WITH_XMLPATTERNS
 void PythonQt_init_QtXmlPatterns(PyObject*);
+#endif
 #endif
 #ifdef PYTHONQT_WITH_MULTIMEDIA
 void PythonQt_init_QtMultimedia(PyObject*);
@@ -99,11 +103,15 @@ namespace PythonQt_QtAll
 #ifdef PYTHONQT_WITH_WEBKIT
     PythonQt_init_QtWebKit(0);
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #ifdef PYTHONQT_WITH_OPENGL
     PythonQt_init_QtOpenGL(0);
 #endif
+#endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #ifdef PYTHONQT_WITH_XMLPATTERNS
     PythonQt_init_QtXmlPatterns(0);
+#endif
 #endif
 #ifdef PYTHONQT_WITH_MULTIMEDIA
     PythonQt_init_QtMultimedia(0);

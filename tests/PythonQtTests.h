@@ -56,7 +56,9 @@
 
 class PythonQtTestSlotCallingHelper;
 class PythonQtTestApiHelper;
+QT_BEGIN_NAMESPACE
 class QWidget;
+QT_END_NAMESPACE
 
 //! test the PythonQt api
 class PythonQtTestApi : public QObject

@@ -4,7 +4,7 @@
 # $Source$
 # --------------------------------------------------
 
-TARGET   = PythonQt-Qt5-PythonXY
+TARGET   = PythonQt-QtXY-PythonXY
 TEMPLATE = lib
 
 DESTDIR    = ../lib
@@ -25,7 +25,7 @@ isEmpty(PYTHONQT_STATIC) {
 
 DEFINES += PYTHONQT_CATCH_ALL_EXCEPTIONS
 
-contains(QT_MAJOR_VERSION, 5) {
+!lessThan(QT_MAJOR_VERSION, 5) {
   QT += widgets core-private
 }
  
@@ -34,6 +34,7 @@ INCLUDEPATH += $$PWD
 include ( ../build/common.prf )  
 include ( ../build/python.prf )
 TARGET = $$replace(TARGET, PythonXY, Python$${PYTHON_VERSION})
+TARGET = $$replace(TARGET, QtXY, Qt$${QT_MAJOR_VERSION})
 
 include ( src.pri )  
 
@@ -47,7 +48,7 @@ unix {
   QMAKE_PKGCONFIG_PREFIX = $$INSTALLBASE
   QMAKE_PKGCONFIG_LIBDIR = $$target.path
   QMAKE_PKGCONFIG_INCDIR = $$headers.path
-  QMAKE_PKGCONFIG_INCDIR += ${prefix}/include/PythonQt5
+  QMAKE_PKGCONFIG_INCDIR += ${prefix}/include/PythonQt$${QT_MAJOR_VERSION}
   QMAKE_PKGCONFIG_VERSION = $$VERSION
 }
 

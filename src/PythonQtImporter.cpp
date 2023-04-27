@@ -338,7 +338,7 @@ PythonQtImporter_load_module(PyObject *obj, PyObject *args)
       QVariantList list = result.toList();
       if (list.count()==3) {
         // We prepend the full module name (including package prefix)
-        list.prepend(fullname);
+        list.prepend(QString(fullname));
 #ifdef __linux
   #ifdef _DEBUG
         // imp_find_module() does not respect the debug suffix '_d' on Linux,
@@ -740,7 +740,11 @@ PythonQtImport::getCodeFromData(const QString& path, int isbytecode,int /*ispack
       QDateTime time;
       time = PythonQt::importInterface()->lastModifiedDate(path);
       QString cacheFilename =  getCacheFilename(path, /*isOptimizedFilename=*/false);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       writeCompiledModule((PyCodeObject*)code, cacheFilename, time.toTime_t(), /*sourceSize=*/qdata.length());
+#else
+      writeCompiledModule((PyCodeObject*)code, cacheFilename, time.toSecsSinceEpoch(), /*sourceSize=*/qdata.length());
+#endif
     }
   }
   return code;
@@ -754,7 +758,11 @@ PythonQtImport::getMTimeOfSource(const QString& path)
   if (PythonQt::importInterface()->exists(path2)) {
     QDateTime t = PythonQt::importInterface()->lastModifiedDate(path2);
     if (t.isValid()) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       mtime = t.toTime_t();
+#else
+      mtime = t.toSecsSinceEpoch();
+#endif
     }
   }
 

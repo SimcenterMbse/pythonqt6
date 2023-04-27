@@ -1,5 +1,6 @@
 # get external pythonqtall config or enable all by default
 
+PYTHONQTALL_CONFIG = $$(PYTHONQTALL_CONFIG)
 isEmpty( PYTHONQTALL_CONFIG ) {
   PYTHONQTALL_CONFIG = $$(PYTHONQTALL_CONFIG)
 }
@@ -26,7 +27,7 @@ isEmpty( PYTHONQTALL_CONFIG ) {
   CONFIG += $${PYTHONQTALL_CONFIG}
 }
 
-TARGET   = PythonQt_QtAll-Qt5-PythonXY
+TARGET   = PythonQt_QtAll-QtXY-PythonXY
 TEMPLATE = lib
 
 DESTDIR    = ../../lib
@@ -34,6 +35,7 @@ DESTDIR    = ../../lib
 include ( ../../build/common.prf )  
 include ( ../../build/PythonQt.prf )  
 TARGET = $$replace(TARGET, PythonXY, Python$${PYTHON_VERSION})
+TARGET = $$replace(TARGET, QtXY, Qt$${QT_MAJOR_VERSION})
 
 CONFIG += qt strict_c++
 
@@ -58,7 +60,7 @@ unix {
   QMAKE_PKGCONFIG_PREFIX = $$INSTALLBASE
   QMAKE_PKGCONFIG_LIBDIR = $$target.path
   QMAKE_PKGCONFIG_INCDIR = $$headers.path
-  QMAKE_PKGCONFIG_INCDIR += $$PREFIX/include/PythonQt5
+  QMAKE_PKGCONFIG_INCDIR += $$PREFIX/include/PythonQt$${QT_MAJOR_VERSION}
   QMAKE_PKGCONFIG_VERSION = $$VERSION
 }
 
@@ -81,18 +83,27 @@ PythonQtCore {
   DEFINES += PYTHONQT_WITH_CORE
   Xinclude (com_trolltech_qt_core)
   QT += core
+  !lessThan(QT_MAJOR_VERSION, 6) {
+    QT += statemachine
+  }
 }
 
-PythonQtGui  {
+PythonQtGui {
   DEFINES += PYTHONQT_WITH_GUI
   Xinclude (com_trolltech_qt_gui)
   QT += gui widgets printsupport
+  lessThan(QT_MAJOR_VERSION, 6) {
+    QT += statemachine opengl
+  }
 }
 
 PythonQtSvg {
   DEFINES += PYTHONQT_WITH_SVG
   Xinclude (com_trolltech_qt_svg)
   QT += svg
+  !lessThan(QT_MAJOR_VERSION, 6) {
+    QT += svgwidgets
+  }
 }
 
 PythonQtSql {
@@ -108,16 +119,24 @@ PythonQtNetwork {
 }
 
 PythonQtOpengl {
-  DEFINES += PYTHONQT_WITH_OPENGL
-  QT += opengl
-  PythonQtCore: Xinclude (com_trolltech_qt_opengl)
+  lessThan(QT_MAJOR_VERSION, 6) {
+    DEFINES += PYTHONQT_WITH_OPENGL
+    PythonQtCore: Xinclude (com_trolltech_qt_opengl)
+    QT += opengl
+  }
+  else {
+     QT += openglwidgets
+  }
+
   QT += xml
 }
 
 PythonQtXmlpatterns {
-  DEFINES += PYTHONQT_WITH_XMLPATTERNS
-  Xinclude (com_trolltech_qt_xmlpatterns)
-  QT += xmlpatterns
+  lessThan(QT_MAJOR_VERSION, 6) {
+    DEFINES += PYTHONQT_WITH_XMLPATTERNS
+    Xinclude (com_trolltech_qt_xmlpatterns)
+    QT += xmlpatterns
+  }
 }
 
 PythonQtMultimedia {

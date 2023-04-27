@@ -386,8 +386,10 @@ void PythonQtTestSignalHandler::testSignalHandler()
   QVERIFY(_helper->emitVariantSignal(12));
   _helper->setExpectedVariant(QStringList() << "test1" << "test2");
   QVERIFY(_helper->emitVariantSignal(QStringList() << "test1" << "test2"));
-  _helper->setExpectedVariant(qVariantFromValue((QObject*)_helper));
-  QVERIFY(_helper->emitVariantSignal(qVariantFromValue((QObject*)_helper)));
+  QVariant lHelper;
+  lHelper.fromValue((QObject*)_helper);
+  _helper->setExpectedVariant(lHelper);
+  QVERIFY(_helper->emitVariantSignal(lHelper));
 
   PyRun_SimpleString("def testComplexSignal(a,b,l,o):\n  if a==12 and b==13 and l==('test1','test2') and o == obj: obj.setPassed();\n");
   // intentionally not normalized signal:
@@ -497,7 +499,12 @@ void PythonQtTestApi::testCall()
   QVERIFY(_helper->call("testCall1", QVariantList() << QVariant("test"), QVariant(QString("test2"))));
 
   PyRun_SimpleString("def testCall2(a, b):\n if a=='test' and b==obj: obj.setPassed();\n return obj;\n");
-  QVariant r = PythonQt::self()->call(PythonQt::self()->getMainModule(), "testCall2", QVariantList() << QVariant("test") << qVariantFromValue((QObject*)_helper));
+  QVariant lHelper;
+  lHelper.fromValue((QObject*)_helper);
+  QVariant r = PythonQt::self()->call(
+    PythonQt::self()->getMainModule(),
+    "testCall2",
+    QVariantList() << QVariant("test") << lHelper);
   QObject* p = qvariant_cast<QObject*>(r);
   QVERIFY(p==_helper);
 }
@@ -514,9 +521,14 @@ void PythonQtTestApi::testVariables()
 
   PythonQt::self()->addVariable(PythonQt::self()->getMainModule(), "someValue", QStringList() << "test1" << "test2");
   QVariant v3 = PythonQt::self()->getVariable(PythonQt::self()->getMainModule(), "someValue");
-  QVERIFY(v3 == QVariant(QStringList() << "test1" << "test2"));
 
-  QStringList l = PythonQt::self()->introspection(PythonQt::self()->getMainModule(), QString::null, PythonQt::Variable);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QVERIFY(v3 == QVariant(QStringList() << "test1" << "test2"));
+#else
+  QVERIFY(v3.toStringList() == QStringList() << "test1" << "test2");
+#endif
+
+  QStringList l = PythonQt::self()->introspection(PythonQt::self()->getMainModule(), "", PythonQt::Variable);
   QSet<QString> s;
   // check that at least these three variables are set
   s << "obj" << "someObject" << "someValue";

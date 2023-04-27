@@ -54,7 +54,9 @@
 #include <QLineF>
 #include <QPoint>
 #include <QPointF>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QRegExp>
+#endif
 
 #include <QFont>
 #include <QBitmap>
@@ -72,7 +74,9 @@
 #include <QPen>
 #include <QTextLength>
 #include <QTextFormat>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QMatrix>
+#endif
 
 #endif
 

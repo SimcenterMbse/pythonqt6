@@ -66,11 +66,18 @@ PYTHONQT_GENERATED_PATH = $$PWD/../generated_cpp
         PYTHONQT_GENERATED_PATH = $$PWD/../generated_cpp_56
       }
     }
+    else:contains(QT_MAJOR_VERSION, 6) {
+      PYTHONQT_GENERATED_PATH = $$PWD/../generated_cpp_62
+    }
   }
 }
 
 VERSION = 3.2.0
-greaterThan(QT_MAJOR_VERSION, 5) | greaterThan(QT_MINOR_VERSION, 9): CONFIG += c++11
+equals(QT_MAJOR_VERSION, 6) {
+   msvc: QMAKE_CXXFLAGS += /permissive-
+   CONFIG += c++17
+}
+else:greaterThan(QT_MAJOR_VERSION, 5) | greaterThan(QT_MINOR_VERSION, 9): CONFIG += c++11
 win32: CONFIG += skip_target_version_ext
 gcc|win32-clang-msvc:QMAKE_CXXFLAGS += -Wno-deprecated-declarations -Wuninitialized -Winit-self -ansi -pedantic
 win32-clang-msvc:QMAKE_CXXFLAGS += -Wno-unused-command-line-argument

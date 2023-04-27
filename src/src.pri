@@ -2,7 +2,12 @@ DEFINES +=  PYTHONQT_EXPORTS
 
 INCLUDEPATH += $$PWD
 
-CONFIG += c++11
+equals(QT_MAJOR_VERSION, 6) {
+    CONFIG += c++17
+}
+else {
+    CONFIG += c++11
+}
 
 gcc:!no_warn:!clang:QMAKE_CXXFLAGS += -Wno-error=missing-field-initializers
 *-clang*:!no_warn:QMAKE_CXXFLAGS += -Wno-error=sometimes-uninitialized

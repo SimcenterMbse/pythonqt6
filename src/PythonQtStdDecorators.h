@@ -82,7 +82,9 @@ public Q_SLOTS:
   const QObjectList* children(QObject* o);
   QObject* findChild(QObject* parent, PyObject* type, const QString& name = QString());
   QList<QObject*> findChildren(QObject* parent, PyObject* type, const QString& name= QString());
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QList<QObject*> findChildren(QObject* parent, PyObject* type, const QRegExp& regExp);
+#endif
 
   bool setProperty(QObject* o, const char* name, const QVariant& value);
   QVariant property(QObject* o, const char* name);
@@ -103,8 +105,10 @@ public Q_SLOTS:
   int static_Qt_qRound(double a) { return qRound(a); }
   qint64 static_Qt_qRound64(double a) { return qRound64(a); }
   const char* static_Qt_qVersion() { return qVersion(); }
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   int static_Qt_qrand() { return qrand(); }
   void static_Qt_qsrand(uint a) { qsrand(a); }
+#endif
 
   QString tr(QObject* obj, const QString& text, const QString& ambig = QString(), int n = -1);
 
@@ -116,7 +120,9 @@ public Q_SLOTS:
 private:
   QObject* findChild(QObject* parent, const char* typeName, const QMetaObject* meta, const QString& name);
   int findChildren(QObject* parent, const char* typeName, const QMetaObject* meta, const QString& name, QList<QObject*>& list);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   int findChildren(QObject* parent, const char* typeName, const QMetaObject* meta, const QRegExp& regExp, QList<QObject*>& list);
+#endif
 };
 
 class PythonQtSingleShotTimer : public QTimer

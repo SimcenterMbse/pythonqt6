@@ -554,7 +554,8 @@ QStringList PythonQtClassInfo::memberList()
     }
   }
 
-  return QSet<QString>::fromList(l).toList();
+  const QSet<QString> lSorterUnifier(l.begin(), l.end());
+  return QStringList(lSorterUnifier.begin(), lSorterUnifier.end());
 }
 
 const QByteArray& PythonQtClassInfo::className() const
